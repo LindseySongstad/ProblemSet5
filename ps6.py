@@ -213,7 +213,10 @@ class CiphertextMessage(Message):
             self.message_text (string, determined by input text)
             self.valid_words (list, determined using helper function load_words)
         '''
-        pass #delete this line and replace with your code here
+        self.message_text = text
+        self.valid_words = load_words(WORDLIST_FILENAME)
+
+        
 
     def decrypt_message(self):
         '''
@@ -231,19 +234,46 @@ class CiphertextMessage(Message):
         Returns: a tuple of the best shift value used to decrypt the message
         and the decrypted message text using that shift value
         '''
-        pass #delete this line and replace with your code here
+        
+        bestMessage = ""
+        mostWords = 0
+        bestShift = 0
+        for i in range(26):
 
-#Example test case (PlaintextMessage)
-plaintext = PlaintextMessage('hello', 2)
-print('Expected Output: jgnnq')
-print('Actual Output:', plaintext.get_message_text_encrypted())
+            newMessage = self.apply_shift(i)
+            realWords = 0
+            for word in newMessage.split(" "):
+                if is_word(self.valid_words, word):
+                    realWords += 1
+            if realWords > mostWords:
+                mostWords = realWords
+                bestMessage = newMessage
+                bestShift = i
+
+        return (bestShift, bestMessage)
+
+
+def decrypt_story():
+    story = get_story_string()
+    message = CiphertextMessage(story)
+    return message.decrypt_message()
+
+    
+
+print(decrypt_story())
+
+
+##Example test case (PlaintextMessage)
+#plaintext = PlaintextMessage('hello', 2)
+#print('Expected Output: jgnnq')
+#print('Actual Output:', plaintext.get_message_text_encrypted())
     
 #Example test case (CiphertextMessage)
-ciphertext = CiphertextMessage('jgnnq')
-print('Expected Output:', (24, 'hello'))
-print('Actual Output:', ciphertext.decrypt_message())
+#ciphertext = CiphertextMessage('jgnnq')
+#print('Expected Output:', (24, 'hello'))
+#print('Actual Output:', ciphertext.decrypt_message())
 
-m = Message('a.b cx-yz9')
-#print(m.build_shift_dict(1))
-print(m.apply_shift(3))
+#m = Message('a.b cx-yz9')
+##print(m.build_shift_dict(1))
+#print(m.apply_shift(3))
 
